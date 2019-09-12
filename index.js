@@ -24,6 +24,12 @@ function guildCallback(guild) {
   screen.render();
 }
 
+var chatMenu = blessed.List({
+  left: '10%-1',
+  top: '5%-1',
+  keys: true,
+  border: 'line',
+});
 
 var guildsMenu = blessed.Listbar({
   height : '5%',
@@ -95,13 +101,16 @@ client.on('ready', () => {
 
 channelMenu.on('select', () => {
   channelMenuArray[channelMenu.selected].fetchMessages({limit:20})
-  .then(messages => {messages.forEach( function(msg) {console.log(msg.content)})});
+  .then(messages => {messages.forEach( function(msg) {chatMenu.add(msg.author.username+' | '+msg.content)})});
+  screen.render();
 });
 
 channelMenu.key('escape', () => {guildsMenu.focus();});
 
 screen.append(guildsMenu);
 screen.append(channelMenu);
+screen.append(chatMenu);
+
 
 screen.render();
 guildsMenu.focus();
